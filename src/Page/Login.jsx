@@ -11,6 +11,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { signin } from "../api/userApi";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -32,13 +33,21 @@ export default function Login() {
   const validatePassword = (text) => {
     return passwordRegex.test(text);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const checkEmail = validateEmail(email);
     if (!checkEmail) setMessageEmail("The email is not formatted correctly");
     else setMessageEmail("");
     const checkPass = validatePassword(password);
     if (!checkPass) setMessagePassword("The password is not correct");
     else setMessagePassword("");
+
+    console.log("submit")
+    try {
+      const res = await signin(email, password);
+      localStorage.setItem("user", JSON.stringify(res.token))
+    } catch (error) {
+      console.log(error)
+    }
   };
   useEffect(() => {
     if (email.length > 0 && password.length > 0) setCheck(false);
@@ -76,7 +85,7 @@ export default function Login() {
                 autoFocus
                 onChange={(e) => setEmail(e.target.value)}
                 error={messageEmail.length > 0}
-                // sx={{ borderColor: messageEmail.length > 0 ? "yellow" : "red" }}/
+              // sx={{ borderColor: messageEmail.length > 0 ? "yellow" : "red" }}/
               />
               <Typography
                 variant="subtitle2"
