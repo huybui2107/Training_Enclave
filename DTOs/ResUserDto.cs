@@ -8,6 +8,7 @@ namespace BE.DTOs
         public string Address { get; set; } = null!;
         public bool Gender { get; set; }
         public string Avatar { get; set; } = null!;
+        public string Name { get; set; } = null!;
     
     }
 }

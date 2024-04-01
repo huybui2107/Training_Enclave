@@ -77,6 +77,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 services.AddAutoMapper(typeof(UserMapperProfile).Assembly);
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<ITokenService, TokenService>();
+services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 
 var app = builder.Build();

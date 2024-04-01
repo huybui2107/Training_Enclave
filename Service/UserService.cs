@@ -3,6 +3,8 @@ using BE.Databases;
 using BE.Databases.Entities;
 using BE.DTOs;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BE.Service
 {
@@ -19,7 +21,12 @@ namespace BE.Service
         public async Task Createuser(UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-           await _context.Users.AddAsync(user);
+
+            using var hashFunc = new HMACSHA256();
+            var passwordBytes = Encoding.UTF8.GetBytes(userDto.Password);
+            user.PasswordHash = hashFunc.ComputeHash(passwordBytes);
+            user.PasswordSalt = hashFunc.Key;
+            await _context.Users.AddAsync(user);
             _context.SaveChanges();
 
         }
@@ -29,9 +36,6 @@ namespace BE.Service
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == username);
         }
 
-        public async Task<User?> Login(string username, string password)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == username && u.Password == password);
-        }
+ 
     }
 }

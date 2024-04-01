@@ -40,9 +40,17 @@ namespace BE.Databases.Migratinons
                     b.Property<bool>("Gender")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("longblob");
 
                     b.HasKey("Id");
 

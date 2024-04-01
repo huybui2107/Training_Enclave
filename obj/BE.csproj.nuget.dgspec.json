@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Code_Project\\DotNet\\Enclave\\BE\\BE\\BE.csproj": {}
+    "D:\\Project\\Training\\BE\\BE.csproj": {}
   },
   "projects": {
-    "E:\\Code_Project\\DotNet\\Enclave\\BE\\BE\\BE.csproj": {
+    "D:\\Project\\Training\\BE\\BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Code_Project\\DotNet\\Enclave\\BE\\BE\\BE.csproj",
+        "projectUniqueName": "D:\\Project\\Training\\BE\\BE.csproj",
         "projectName": "BE",
-        "projectPath": "E:\\Code_Project\\DotNet\\Enclave\\BE\\BE\\BE.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "E:\\Code_Project\\DotNet\\Enclave\\BE\\BE\\obj\\",
+        "projectPath": "D:\\Project\\Training\\BE\\BE.csproj",
+        "packagesPath": "C:\\Users\\Heaton\\.nuget\\packages\\",
+        "outputPath": "D:\\Project\\Training\\BE\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Heaton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -34,11 +39,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -48,6 +48,10 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[12.0.1, )"
+            },
+            "CloudinaryDotNet": {
+              "target": "Package",
+              "version": "[1.26.2, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -109,7 +113,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

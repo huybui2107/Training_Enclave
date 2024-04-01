@@ -7,6 +7,6 @@ namespace BE.Service
     {
         Task Createuser(UserDto userDto);
         Task<User?> getUserByUserName(string username);
-        Task<User?> Login(string username , string password);
+
     }
 }
