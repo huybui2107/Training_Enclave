@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,26 +6,25 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { signin } from "../api/userApi";
-
+import { emailRegex, passwordRegex } from "../constant/regex";
+import { useNavigate } from "react-router-dom";
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function Login() {
-  const emailRegex = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=])(?!.*\s).{8,}$/;
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(true);
   const [messageEmail, setMessageEmail] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
-
+  const [checkError, setCheckError] = useState(false);
   const validateEmail = (text) => {
     return emailRegex.test(text);
   };
@@ -38,15 +36,20 @@ export default function Login() {
     if (!checkEmail) setMessageEmail("The email is not formatted correctly");
     else setMessageEmail("");
     const checkPass = validatePassword(password);
-    if (!checkPass) setMessagePassword("The password is not correct");
+    if (!checkPass)
+      setMessagePassword(
+        "Password must have at least 8 characters and 1 uppercase letter and 1 special character."
+      );
     else setMessagePassword("");
 
-    console.log("submit")
-    try {
-      const res = await signin(email, password);
-      localStorage.setItem("user", JSON.stringify(res.token))
-    } catch (error) {
-      console.log(error)
+    if (checkEmail && checkPass) {
+      try {
+        const res = await signin(email, password);
+        localStorage.setItem("user", JSON.stringify(res.token));
+        navigate(`/user?username=${email}`);
+      } catch (error) {
+        setCheckError(true);
+      }
     }
   };
   useEffect(() => {
@@ -66,12 +69,24 @@ export default function Login() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+          {checkError && (
+            <Box
+              sx={{
+                backgroundColor: "#ffccc7",
+                width: "100%",
+                height: 50,
+                border: "1px solid #f5222d",
+                padding: "2px",
+                display: "flex",
+                gap: 3,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <HighlightOffIcon color="error" />
+              <Typography>The Username or Password is incorrect</Typography>
+            </Box>
+          )}
           <Box sx={{ mt: 1, width: 400 }}>
             <Box>
               <TextField
@@ -85,7 +100,7 @@ export default function Login() {
                 autoFocus
                 onChange={(e) => setEmail(e.target.value)}
                 error={messageEmail.length > 0}
-              // sx={{ borderColor: messageEmail.length > 0 ? "yellow" : "red" }}/
+                // sx={{ borderColor: messageEmail.length > 0 ? "yellow" : "red" }}/
               />
               <Typography
                 variant="subtitle2"
