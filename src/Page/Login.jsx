@@ -4,33 +4,28 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-
 import Box from "@mui/material/Box";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { signin } from "../api/userApi";
-import { emailRegex, passwordRegex } from "../constant/regex";
+import { Authenticate, signin } from "../api/userApi";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword } from "../helper/Validate";
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(true);
   const [messageEmail, setMessageEmail] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
   const [checkError, setCheckError] = useState(false);
-  const validateEmail = (text) => {
-    return emailRegex.test(text);
-  };
-  const validatePassword = (text) => {
-    return passwordRegex.test(text);
-  };
+
   const handleSubmit = async () => {
     const checkEmail = validateEmail(email);
     if (!checkEmail) setMessageEmail("The email is not formatted correctly");
@@ -56,6 +51,25 @@ export default function Login() {
     if (email.length > 0 && password.length > 0) setCheck(false);
     else setCheck(true);
   }, [email, password]);
+
+  useEffect(() => {
+    var accessToken = JSON.parse(localStorage.getItem("user"));
+    if (accessToken !== null) {
+      try {
+        const authen = async () => {
+          const res = await Authenticate();
+          if (res.token !== null) {
+            localStorage.removeItem("user");
+            localStorage.setItem("user", JSON.stringify(res.token));
+            navigate(`/user?username=${res.email}`);
+          }
+        };
+        authen();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
