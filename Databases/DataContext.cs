@@ -8,5 +8,6 @@ namespace BE.Databases
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         
         public DbSet<User> Users { get; set; }
+        public DbSet<FileUpload> Files { get; set; }
     }
 }

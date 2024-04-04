@@ -18,6 +18,25 @@ namespace BE.Databases.Migratinons
                 .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("BE.Databases.Entities.FileUpload", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("BE.Databases.Entities.User", b =>
                 {
                     b.Property<int>("Id")

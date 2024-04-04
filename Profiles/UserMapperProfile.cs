@@ -9,6 +9,7 @@ namespace BE.Profiles
         public UserMapperProfile() {
             CreateMap<UserDto, User>();
             CreateMap<User, ResUserDto>();
+            CreateMap<FileDto,FileUpload>();
         }
     }
 }

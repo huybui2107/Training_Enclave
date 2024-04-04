@@ -51,6 +51,7 @@ namespace BE.Controllers
             }
             var res = new ResUser
             {
+                Email = username,
                 Token = await _tokenService.GenerateToken(username),
             };
             return Ok(res);
@@ -72,11 +73,11 @@ namespace BE.Controllers
         }
 
         [HttpPost("upload_file")]
-        public async Task<ActionResult> UploadFile(IFormFile model)
-        {   
+        public async Task<ActionResult<FileDto>> UploadFile(IFormFile file)
+        {
             try
             {
-                var urlfile = _cloudinary.uploadFile(model);
+                var urlfile = await _cloudinary.uploadFile(file);
                 if (urlfile == null)
                     return BadRequest("Invalid file.");
 
@@ -85,20 +86,33 @@ namespace BE.Controllers
             }
             catch (Exception ex)
             {
-
+                return BadRequest(ex.Message);
             }
 
-
-            return Ok();
         }
 
         [Authorize]
         [HttpGet("userinfor")]
         public async Task<ActionResult<ResUserDto>> getInfor(string username)
         {
+            var checkUsername = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+            if (checkUsername != username) return Unauthorized();
             var currentUser = await _userService.getUserByUserName(username);
             if (currentUser == null) return BadRequest("User is not exist");
             return Ok(_mapper.Map<ResUserDto>(currentUser));
+        }
+
+        [Authorize]
+        [HttpGet("authenticate")]
+        public async Task<ActionResult<ResUser>> Authen()
+        {
+            var userName = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+            if (userName is null) return Unauthorized();
+            return Ok( new ResUser
+            {
+                Email = userName,
+                Token = await _tokenService.GenerateToken(userName),
+            });
         }
     }
 }

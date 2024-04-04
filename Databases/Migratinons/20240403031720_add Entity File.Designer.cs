@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BE.Databases.Migratinons
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240401034156_add field Name")]
-    partial class addfieldName
+    [Migration("20240403031720_add Entity File")]
+    partial class addEntityFile
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,25 @@ namespace BE.Databases.Migratinons
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("BE.Databases.Entities.FileUpload", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+                });
 
             modelBuilder.Entity("BE.Databases.Entities.User", b =>
                 {

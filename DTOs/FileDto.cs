@@ -1,8 +1,7 @@
-﻿namespace BE.Databases.Entities
+﻿namespace BE.DTOs
 {
-    public class File
+    public class FileDto
     {
-        public int Id { get; set; }
         public string Version { get; set; } = null!;
         public string Url { get; set; } = null!;
     }
