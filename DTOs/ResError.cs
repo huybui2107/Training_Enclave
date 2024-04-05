@@ -1,10 +1,9 @@
 ﻿namespace BE.DTOs
 {
-    public class ResUser
+    public class ResError
     {
         public string StatusCode { get; set; } = null!;
-        
+
         public string Message { get; set; } = null!;
-        public object User { get; set; } = null!;
     }
 }

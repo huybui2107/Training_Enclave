@@ -5,7 +5,7 @@ namespace BE.Service
 {
     public interface IUserService
     {
-        Task Createuser(UserDto userDto);
+        Task Createuser(RequestUserDto userDto);
         Task<User?> getUserByUserName(string username);
 
     }

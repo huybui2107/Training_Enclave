@@ -2,7 +2,7 @@
 
 namespace BE.DTOs
 {
-    public class UserDto
+    public class RequestUserDto
     {
         public string Email { get; set; } = null!;
         public string Address { get; set; } = null!;

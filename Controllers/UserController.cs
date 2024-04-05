@@ -33,47 +33,76 @@ namespace BE.Controllers
             _cloudinary = cloudinary;
         }
         [HttpPost("login")]
-        public async Task<ActionResult<ResUser>> SignIn (string username, string password)
+        public async Task<ActionResult> SignIn (string username, string password)
         {
-            if (!Extension.ValidEmail(username)) return BadRequest("The format of the email address isn't correct");
+            if (!Extension.ValidEmail(username)) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "The format of the email address isn't correct",
+            });
 
 
-            if (!Extension.IsValidPassword(password)) return BadRequest("The format of the password isn't correct");
+            if (!Extension.IsValidPassword(password)) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "Password must have at least 8 characters and 1 uppercase letter and 1 special character.",
+            });
             var currentUser = await _userService.getUserByUserName(username);
-            if (currentUser is null) return BadRequest("User is not found");
+            if (currentUser is null) return  Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "User is not found!",
+            }) ;
             using var hashFunc = new HMACSHA256(currentUser.PasswordSalt);
             var passwordBytes = Encoding.UTF8.GetBytes(password);
             var passwordHash = hashFunc.ComputeHash(passwordBytes);
             for (int i = 0; i < passwordHash.Length; i++)
             {
                 if (passwordHash[i] != currentUser.PasswordHash[i])
-                    return Unauthorized("Password not match");
+                    return Ok(new ResError
+                    {
+                        StatusCode = "200",
+                        Message = "Password is not match!",
+                    });
             }
-            var res = new ResUser
+            return Ok(new ResAuthen
             {
-                Email = username,
+                StatusCode = "200",
+                Message = "Login is success!",
                 Token = await _tokenService.GenerateToken(username),
-            };
-            return Ok(res);
+                User = _mapper.Map<ResUserDto>(currentUser)
+            }); ;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> SignUp(UserDto userDto)
+        public async Task<ActionResult> SignUp(RequestUserDto userDto)
         {
 
-            if(!Extension.ValidEmail(userDto.Email)) return BadRequest("The format of the email address is incorrect");
+            if(!Extension.ValidEmail(userDto.Email)) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "The format of the email address isn't correct",
+            });
 
 
-            if (!Extension.IsValidPassword(userDto.Password)) return BadRequest("The format of the password isn incorrect");
-            if (await _userService.getUserByUserName(userDto.Email) is not null) return BadRequest("Email is existed ...");
+            if (!Extension.IsValidPassword(userDto.Password)) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "Password must have at least 8 characters and 1 uppercase letter and 1 special character.",
+            });
+            if (await _userService.getUserByUserName(userDto.Email) is not null) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = " the email address is exist",
+            });
 
-            
-           await _userService.Createuser(userDto);
+
+            await _userService.Createuser(userDto);
             return Ok();
         }
 
         [HttpPost("upload_file")]
-        public async Task<ActionResult<FileDto>> UploadFile(IFormFile file)
+        public async Task<ActionResult<ResFileDto>> UploadFile(IFormFile file)
         {
             try
             {
@@ -81,7 +110,13 @@ namespace BE.Controllers
                 if (urlfile == null)
                     return BadRequest("Invalid file.");
 
-                return Ok(urlfile);
+                return Ok(new ResFileDto
+                {
+                    StatusCode = "200",
+                    Message ="Upload file successfully",
+                    File = urlfile
+
+                });
 
             }
             catch (Exception ex)
@@ -93,25 +128,45 @@ namespace BE.Controllers
 
         [Authorize]
         [HttpGet("userinfor")]
-        public async Task<ActionResult<ResUserDto>> getInfor(string username)
+        public async Task<ActionResult<ResUser>> getInfor(string username)
         {
             var checkUsername = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
-            if (checkUsername != username) return Unauthorized();
+            if (checkUsername != username) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "The email is not matched",
+            }); 
             var currentUser = await _userService.getUserByUserName(username);
-            if (currentUser == null) return BadRequest("User is not exist");
-            return Ok(_mapper.Map<ResUserDto>(currentUser));
+            if (currentUser == null) if (checkUsername != username) return Ok(new ResError
+            {
+                StatusCode = "200",
+                Message = "User is not exist",
+            });
+            return Ok(new ResUser
+            {
+                StatusCode = "200",
+                Message = "Get user's information successfully",
+                User = _mapper.Map<ResUserDto>(currentUser)
+            });
         }
 
         [Authorize]
         [HttpGet("authenticate")]
-        public async Task<ActionResult<ResUser>> Authen()
+        public async Task<ActionResult> Authen()
         {
             var userName = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
-            if (userName is null) return Unauthorized();
-            return Ok( new ResUser
+            if (userName is null) Ok(new ResError
             {
-                Email = userName,
+                StatusCode = "200",
+                Message = "The email is not matched",
+            });
+            var currentUser = await _userService.getUserByUserName(userName);
+            return Ok(new ResAuthen
+            {
+                StatusCode = "200",
+                Message = "Authen is success!",
                 Token = await _tokenService.GenerateToken(userName),
+                User = _mapper.Map<ResUserDto>(currentUser)
             });
         }
     }

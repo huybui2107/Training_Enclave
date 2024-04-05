@@ -7,7 +7,7 @@ namespace BE.Profiles
     public class UserMapperProfile : Profile
     {
         public UserMapperProfile() {
-            CreateMap<UserDto, User>();
+            CreateMap<RequestUserDto, User>();
             CreateMap<User, ResUserDto>();
             CreateMap<FileDto,FileUpload>();
         }

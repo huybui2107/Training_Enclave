@@ -18,7 +18,7 @@ namespace BE.Service
             _context = context;
             _mapper = mapper;
         }
-        public async Task Createuser(UserDto userDto)
+        public async Task Createuser(RequestUserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
 
