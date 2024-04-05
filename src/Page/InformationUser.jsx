@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import { Box, Divider, Button, styled } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Notify from "../components/Notify";
+import ProgressCustom from "../components/ProgressCustom";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -36,7 +37,7 @@ export default function InformationUser() {
       const paramValue = searchParams.get("username");
       const user = await GetInforUser(paramValue);
       console.log(user);
-      setUser(user);
+      setUser(user.user);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +52,7 @@ export default function InformationUser() {
           "Content-Type": "multipart/form-data",
         },
       });
-      setFile(res);
+      setFile(res.file);
       setAlert({
         message: "Upload file successfully",
         severity: "success",
@@ -124,18 +125,30 @@ export default function InformationUser() {
           </Box>
         </CardContent>
       </Card>
+
       <Box>
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-          sx={{ marginTop: 10 }}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 2,
+            gap: 2,
+          }}
         >
-          Upload file
-          <VisuallyHiddenInput type="file" onChange={upLoadFile} />
-        </Button>
+          <ProgressCustom />
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload file
+            <VisuallyHiddenInput type="file" onChange={upLoadFile} />
+          </Button>
+        </Box>
         <Box
           flexDirection="row"
           display="flex"
@@ -156,19 +169,19 @@ export default function InformationUser() {
             {file.url?.split("/").pop()}
           </Typography>
         </Box>
-        <Notify
-          open={alert.open}
-          message={alert.message}
-          severity={alert.severity}
-          onclose={() =>
-            setAlert({
-              message: "",
-              severity: "",
-              open: false,
-            })
-          }
-        />
       </Box>
+      <Notify
+        open={alert.open}
+        message={alert.message}
+        severity={alert.severity}
+        onclose={() =>
+          setAlert({
+            message: "",
+            severity: "",
+            open: false,
+          })
+        }
+      />
     </>
   );
 }

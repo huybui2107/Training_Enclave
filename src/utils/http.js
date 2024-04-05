@@ -3,7 +3,7 @@ import axios from "axios";
 class Http {
   constructor() {
     this.instance = axios.create({
-      baseURL: "http://127.0.0.1:5242/api/",
+      baseURL: "http://192.168.20.116:5242/api/",
       name: "Dictionary App",
       timeout: 10000,
       headers: {
